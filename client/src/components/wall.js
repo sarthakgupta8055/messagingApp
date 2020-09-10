@@ -13,13 +13,19 @@ class Wall extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            messages : []
+            messages : [],
+            count : 0
         }
     }
     componentDidMount(){
+        this.setState({
+            count : 0
+        })
         axios.get("http://localhost:4000/messages/allMessages")
             .then(response => {
-                this.setState({ messages: response.data });
+                this.setState({ messages: response.data.message,
+                    count : response.data.count
+                });                
             })
             .catch(function (error){
                 console.log(error);
@@ -34,6 +40,7 @@ class Wall extends React.Component{
         return(
             <React.Fragment>
                 <div className={"text-center"}>Wall</div>
+        <p>Total Messages {this.state.count}</p>
                 <table className="table table-striped" style={{ marginTop: 20 }} >
                     <thead>
                         <tr>

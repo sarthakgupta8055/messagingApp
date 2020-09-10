@@ -19,11 +19,24 @@ connection.once('open', function() {
 })
 //all messages
 messageRoutes.route('/allMessages').get(function(req, res) {
+    data = {
+        message :null,
+        count : null
+    }
+    MessageDb.count({} , function(err, count) {
+        if(err){
+            console.log(err);
+        }
+        else{
+            data.count=count;
+        }
+    })
     MessageDb.find(function(err, messages) {
         if (err) {
             console.log(err);
         } else {
-            res.json(messages);
+            data.message = messages;
+            res.json(data);
         }
     });
 });
