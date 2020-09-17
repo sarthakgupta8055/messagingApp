@@ -23,7 +23,7 @@ messageRoutes.route('/allMessages').get(function(req, res) {
         message :null,
         count : null
     }
-    MessageDb.count({} , function(err, count) {
+    MessageDb.countDocuments({} , function(err, count) {
         if(err){
             console.log(err);
         }

@@ -1,17 +1,18 @@
 import React from 'react';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
+import Wall from './wall';
 
 class typeMessage extends React.Component{
     constructor(props){
-        super(props)
-        
+        super();
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handleOnSubmit = this.handleOnSubmit.bind(this);
         this.state = {
             message : "",
             SenderName: "",
-            PostDate : ""
+            PostDate : "",
+            allMessages : null
         }
     }
     handleOnChange(event){
@@ -25,7 +26,26 @@ class typeMessage extends React.Component{
             PostDate : d.toLocaleDateString()
         })
     }
-    handleOnSubmit(event){          
+    FetchData(){
+        console.log("Fetching data")
+        axios.get("http://localhost:4000/messages/allMessages")
+            .then(response => {
+                this.setState({ messages: response.data.message,
+                    count : response.data.count
+                }, 
+                () =>{console.log("Fetched Data ", response.data);
+                    this.setState({
+                        allMessages : response.data
+                    })
+                });                
+            })
+            .catch(function (error){
+                console.log(error);
+            })
+    }
+    handleOnSubmit(event){
+        event.preventDefault();
+          
         this.setState({
             SenderName : this.state.SenderName.trim(),
             message: this.state.message.trim(),
@@ -39,9 +59,7 @@ class typeMessage extends React.Component{
             };
             console.log(messageData);
             axios.post("http://localhost:4000/messages/", messageData)
-                .then(res => console.log(res.data));
-
-            event.preventDefault();
+                .then(this.FetchData());
         }
         else{
             return;
@@ -49,17 +67,21 @@ class typeMessage extends React.Component{
         this.setState({
             message : "",
             SenderName: "",
-            PostDate : ""
         })
     }
     render(){
         return(
             <React.Fragment>
+                <Wall messages={this.state.allMessages}/>
                 <form className={"a"}>
-                    <input type="text" name={"SenderName"} placeholder={"Enter your name"} 
+                    <input type="text" name={"SenderName"}
+                        className={"ml-2"}
+                        placeholder={"Enter your name"} 
                         value={this.state.SenderName}
                         onChange={this.handleOnChange} required></input>
-                    <input type="text" name={"message"} placeholder={"Enter your message"} 
+                    <input type="text" name={"message"}
+                        className={"ml-2"}
+                        placeholder={"Enter your message"} 
                         value={this.state.message}
                         onChange={this.handleOnChange} required></input>
                     <button type="submit" onClick={this.handleOnSubmit} 

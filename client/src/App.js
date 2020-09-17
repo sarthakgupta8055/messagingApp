@@ -1,8 +1,6 @@
 import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-// import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-
-import Navigation from './components/navigation'
+import Message from './components/typeMessage'
 import './App.css';
 
 class App extends React.Component{
@@ -10,7 +8,7 @@ class App extends React.Component{
     return(
         <React.Fragment>
           <div className={"container"}>
-            <Navigation />
+            <Message />
           </div>
         </React.Fragment>
     )
