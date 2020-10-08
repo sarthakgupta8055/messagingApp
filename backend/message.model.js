@@ -12,4 +12,4 @@ let Message = new schema({
         type : String
     }
 })
-module.exports = mongoose.model('messageCollection', Message);
+module.exports = mongoose.model('Messages', Message);
