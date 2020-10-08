@@ -1,3 +1,22 @@
+
+// var http = require('http');
+// var MongoClient = require('mongodb').MongoClient;
+// var url = "mongodb://localhost:27017/";
+// const PORT = 5000;
+// MongoClient.connect(url, function(err, db) {
+//   if (err) throw err;
+//   else{
+//     var dbo = db.db("MessageApp");
+//     console.log("DB connected");  
+//   }
+// });
+
+// var server=http.createServer();
+// if(server.listen(PORT)){
+//     console.log("Server is running up on port 4000");
+// }
+
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -7,6 +26,7 @@ const messageRoutes = express.Router();
 const PORT = 4000;
 
 let MessageDb = require('./message.model');
+const { query } = require('express');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -16,6 +36,31 @@ const connection = mongoose.connection;
 
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
+})
+
+//Filter By name
+messageRoutes.route('/FilterByName').post(function(req, res){
+    // console.log(req.body.FilterName);
+    var query ={
+        SenderName : req.body.FilterName
+    }
+    MessageDb.find(query)
+        .then(messages =>{
+            res.json(messages);
+            // res.send(messages.json());
+        })
+
+    //     MessageDb.find(function(err, messages) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+// //            res.send("HIIIII");
+//             res.send(messages);
+//             // data.message = messages;
+//             // res.status(200).json({'message': 'message added'});
+//             // res.json(data);
+//         }
+//     });
 })
 //all messages
 messageRoutes.route('/allMessages').get(function(req, res) {

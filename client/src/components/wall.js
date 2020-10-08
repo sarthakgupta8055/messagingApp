@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
+import Filter from './filter'
 
 const CurrentMessage = props => (
     <div className={"row m-2"}>
@@ -19,7 +20,26 @@ class Wall extends React.Component{
             count : 0
         }
     }
+    //Filter By Name
+    SampleCheck(name){
+        name = name.trim();
+        console.log(name);
+        if(name!=""){
+            axios.post("http://localhost:4000/messages/FilterByName",{ FilterName : name})
+            .then(response =>{
+                this.setState({
+                    messages : response.data
+                })
+                console.log(this.state.messages);
+            });
+        }
+        else{
+            this.FetchData();
+        }
+
+    }
     FetchData(){
+        // console.log("check")
         axios.get("http://localhost:4000/messages/allMessages")
             .then(response => {
                 this.setState({ messages: response.data.message,
@@ -56,20 +76,14 @@ class Wall extends React.Component{
         return(
             <React.Fragment>
                 <div className={"text-center"}>Wall</div>
-                <p>Total Messages {this.state.count}</p>
+                <div className={"row"}>
+                    <p className={"col-sm-4"}>Total Messages {this.state.count}</p>
+                    <p className={"col-sm-4"}/>
+                    <p className={"col-sm-4"}>
+                        <Filter className={"float-right"} FilterFunction={(name)=>this.SampleCheck(name)}/>
+                    </p>
+                </div>
                 <div>{ this.displayMessages() }</div>
-                {/* <table className="table table-striped" style={{ marginTop: 20 }} >
-                    <thead>
-                        <tr>
-                            <th>Sender</th>
-                            <th>Message</th>
-                            <th>Date Posted</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { this.displayMessages() }
-                    </tbody>
-                </table> */}
             </React.Fragment>
         )
     }
